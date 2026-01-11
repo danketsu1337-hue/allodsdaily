@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.enums import ParseMode
-from aiogram.types import Message
 
 TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(token=TOKEN)
@@ -19,7 +18,7 @@ CACHE = {
     "timestamp": 0
 }
 
-CACHE_TTL = 60  # кэш 60 сек
+CACHE_TTL = 60
 
 
 async def fetch_page(url):
@@ -29,7 +28,6 @@ async def fetch_page(url):
 
 
 async def fetch_allods_data():
-    # Проверяем кэш
     if CACHE["servers"] and (time.time() - CACHE["timestamp"] < CACHE_TTL):
         return CACHE["servers"]
 
@@ -97,8 +95,8 @@ def main_menu():
     return kb.as_markup()
 
 
-@dp.message(commands=["start"])
-async def cmd_start(message: Message):
+@dp.message(lambda m: m.text == "/start")
+async def cmd_start(message: types.Message):
     await message.answer(
         "Привет! Я бот по игре **Аллоды Онлайн** ⚔\nВыбирай категорию👇",
         reply_markup=main_menu(),
